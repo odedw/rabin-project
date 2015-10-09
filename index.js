@@ -25,6 +25,10 @@ var app = express();
 var http = require('http').Server(app);
 var bodyParser = require('body-parser');
 var path = require('path');
+var exec = require('child_process').exec;
+var cmd = 'phantomjs eta.js';
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', function (req,res){
@@ -33,7 +37,9 @@ app.get('/', function (req,res){
 
 
 app.get('/api/eta/:route', function(req, res){
-    res.send('<h1>Hello world</h1>');
+  exec(cmd, function(error, stdout, stderr) {
+    res.send(stdout);
+  });
 });
 
 app.get('/api/:route/name', function(req, res){

@@ -19,9 +19,9 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
-    "phantom": "^0.8.0",
-    "phantomjs": "^1.9.18",
-    "phridge": "^1.2.0"
+    "phantomjs": "^1.9.18"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "zombie": "^4.1.0"
+  }
 }
