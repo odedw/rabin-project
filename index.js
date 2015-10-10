@@ -6,6 +6,7 @@ var path = require('path');
 var exec = require('child_process').exec;
 var cmd = 'phantomjs eta.js ';
 var url = require('url');
+var timestring = require('timestring');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
@@ -21,7 +22,8 @@ app.get('/api/eta/:route', function(req, res){
   if (query.eta) res.send(query.eta.toString());
   else {
     exec(cmd + req.params.route, function(error, stdout, stderr) {
-      res.send(stdout);
+      if (stdout) res.send(stdout.parseTime('m').toString());
+      else res.send('0');
     });
   }
 });
