@@ -1,6 +1,6 @@
 var routes = [
   {
-    url: 'https://www.google.co.il/maps/dir/Eilat/Holon/@30.9422065,35.0367548,8z/data=!4m8!4m7!1m2!1m1!1s0x150071e324795e0b:0xfe1d95f85577f6db!1m2!1m1!1s0x1502b4bb0c33bf39:0xfbdd79640525e72d!3e0?force=lite&hl=en',
+    url: 'https://www.google.co.il/maps/dir/Rav+Ashi+St+11,+Tel+Aviv-Yafo/Rabin+Square/@32.0999458,34.7746972,14z/data=!3m1!4b1!4m13!4m12!1m5!1m1!1s0x151d496bd36d509d:0x5b8ca4673b888dc7!2m2!1d34.799061!2d32.1207837!1m5!1m1!1s0x151d4b85eeabf6d3:0x1e9885d94981dca5!2m2!1d34.7806387!2d32.0803408?hl=en&force=lite',
     name: 'Harav ashi 11, Tel aviv  > Kikar rabin'
   },
   {

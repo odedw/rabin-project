@@ -15,8 +15,16 @@ app.get('/', function (req,res){
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-
 app.get('/api/eta/:route', function(req, res){
+  var url_parts = url.parse(req.url, true);
+  var query = url_parts.query;
+  var eta = query.eta || 10 + Math.floor(Math.random() * 20);
+  res.send(eta.toString());
+  return;
+
+});
+
+app.get('/api/:route/name', function(req, res){
   var url_parts = url.parse(req.url, true);
   var query = url_parts.query;
   if (query.eta) res.send(query.eta.toString());
@@ -26,12 +34,6 @@ app.get('/api/eta/:route', function(req, res){
       else res.send('0');
     });
   }
-});
-
-app.get('/api/:route/name', function(req, res){
-  exec(cmd, function(error, stdout, stderr) {
-    res.send(stdout);
-  });
 });
 
 http.listen(process.env.PORT || 4000, function(){
