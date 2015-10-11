@@ -30,7 +30,10 @@ app.get('/api/:route/name', function(req, res){
   if (query.eta) res.send(query.eta.toString());
   else {
     exec(cmd + req.params.route, function(error, stdout, stderr) {
-      if (stdout) res.send(stdout.parseTime('m').toString());
+      if (stdout) {
+        console.log('----------stdout is ' + stdout);
+        res.send(stdout.parseTime('m').toString());
+      }
       else res.send('0');
     });
   }
