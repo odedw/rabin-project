@@ -25,22 +25,106 @@ var args = system.args;
 var index = parseInt(args[1]);
 var webpage = require('webpage');
 var page = webpage.create();
-page.viewportSize = {
-  width: 800,
-  height: 600
-};
 
 function getRouteEta(route){
+  var start = new Date();
   page.open(route.url , function(status) {
-    route.eta = page.evaluate(function() {
-      var elems = document.querySelectorAll(".ml-directions-selection-screen-non-transit-row span");
-      return elems.length > 5 ? elems[4].innerText : null;
+    onLoadComplete(page, function(){
+      var eta = page.evaluate(function() {
+        var elems = document.querySelectorAll(".ml-directions-selection-screen-non-transit-row span");
+        return elems.length > 5 ? elems[4].innerText : null;
+      });
+      console.log(eta);// + ', ' + (new Date() - start));
+
+      page.render('public/page' + index + '.png');
+      phantom.exit()
     });
-    console.log(route.eta);
-    page.render('public/page' + index + '.png');
-    phantom.exit()
   });
 };
+
+function onLoadComplete(page, callback){
+  var waiting = [];  // request id
+  var interval = 200;  //ms time waiting new request
+  var timer = setTimeout( timeout, interval);
+  var max_retry = 3;  //
+  var counter_retry = 0;
+
+  function timeout(){
+    if(waiting.length && counter_retry < max_retry){
+      timer = setTimeout( timeout, interval);
+      counter_retry++;
+      return;
+    }else{
+      try{
+        callback(null, page);
+      }catch(e){}
+    }
+  }
+
+  //for debug, log time cost
+  var tlogger = {};
+
+  bindEvent(page, 'request', function(req){
+    waiting.push(req.id);
+  });
+
+  bindEvent(page, 'receive', function (res) {
+    var cT = res.contentType;
+    if(!cT){
+      console.log('[contentType] ', cT, ' [url] ', res.url);
+    }
+    if(!cT) return remove(res.id);
+    if(cT.indexOf('application') * cT.indexOf('text') != 0) return remove(res.id);
+
+    if (res.stage === 'start') {
+      console.log('!!received start: ', res.id);
+      //console.log( JSON.stringify(res) );
+      tlogger[res.id] = new Date();
+    }else if (res.stage === 'end') {
+      console.log('!!received end: ', res.id, (new Date() - tlogger[res.id]) );
+      //console.log( JSON.stringify(res) );
+      remove(res.id);
+
+      clearTimeout(timer);
+      timer = setTimeout(timeout, interval);
+    }
+
+  });
+
+  bindEvent(page, 'error', function(err){
+    remove(err.id);
+    if(waiting.length === 0){
+      counter_retry = 0;
+    }
+  });
+
+  function remove(id){
+    var i = waiting.indexOf( id );
+    if(i < 0){
+      return;
+    }else{
+      waiting.splice(i,1);
+    }
+  }
+
+  function bindEvent(page, evt, cb){
+    switch(evt){
+      case 'request':
+      page.onResourceRequested = cb;
+      break;
+      case 'receive':
+      page.onResourceReceived = cb;
+      break;
+      case 'error':
+      page.onResourceError = cb;
+      break;
+      case 'timeout':
+      page.onResourceTimeout = cb;
+      break;
+    }
+  }
+}
+
 if (index < routes.length) getRouteEta(routes[index]);
 else {
   console.log(0);
