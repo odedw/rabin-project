@@ -71,17 +71,17 @@ function onLoadComplete(page, callback){
   bindEvent(page, 'receive', function (res) {
     var cT = res.contentType;
     if(!cT){
-      console.log('[contentType] ', cT, ' [url] ', res.url);
+      // console.log('[contentType] ', cT, ' [url] ', res.url);
     }
     if(!cT) return remove(res.id);
     if(cT.indexOf('application') * cT.indexOf('text') != 0) return remove(res.id);
 
     if (res.stage === 'start') {
-      console.log('!!received start: ', res.id);
+      // console.log('!!received start: ', res.id);
       //console.log( JSON.stringify(res) );
       tlogger[res.id] = new Date();
     }else if (res.stage === 'end') {
-      console.log('!!received end: ', res.id, (new Date() - tlogger[res.id]) );
+      // console.log('!!received end: ', res.id, (new Date() - tlogger[res.id]) );
       //console.log( JSON.stringify(res) );
       remove(res.id);
 
