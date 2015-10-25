@@ -18,9 +18,10 @@ app.get('/', function (req,res){
 app.get('/api/eta/:route', function(req, res){
   var url_parts = url.parse(req.url, true);
   var query = url_parts.query;
+  var index = parseInt(req.params.route) - 1;  
   if (query.eta) res.send(query.eta.toString());
   else {
-    exec(cmd + req.params.route, function(error, stdout, stderr) {
+    exec(cmd + index, function(error, stdout, stderr) {
       if (stdout) {
         console.log('----------stdout is ' + stdout);
         res.send(stdout.parseTime('m').toString());
@@ -33,6 +34,7 @@ app.get('/api/eta/:route', function(req, res){
 app.get('/api/old/:route', function(req, res){
   var url_parts = url.parse(req.url, true);
   var query = url_parts.query;
+  
   var eta = query.eta || 10 + Math.floor(Math.random() * 20);
   res.send(eta.toString());
   return;
